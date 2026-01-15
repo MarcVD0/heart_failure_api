@@ -5,7 +5,7 @@ library(plumber)
 
 
 #load model
-model <- readRDS("../model/model_logistic_DEATH_EVENT.rds")
+model <- readRDS("model/model_logistic_DEATH_EVENT.rds")
 
 #* Health check endpoint
 #* @tag System
@@ -15,51 +15,49 @@ function() {
   list(status = "ok")
 }
 
-#* Predict probability of heart failure
-#* @tag Prediction
-#*
-#* Returns the predicted probability that DEATH_EVENT = 1
-#*
-#* @param age Numeric. Patient age.
-#* @param anaemia Integer (0/1).
-#* @param creatinine_phosphokinase Numeric.
-#* @param diabetes Integer (0/1).
-#* @param ejection_fraction Numeric.
-#* @param high_blood_pressure Integer (0/1).
-#* @param platelets Numeric.
-#* @param serum_creatinine Numeric.
-#* @param serum_sodium Numeric.
-#* @param sex Integer (0/1).
-#* @param smoking Integer (0/1).
+#* Predict death probability
+#* @param age Age in years (0–120)
+#* @param ejection_fraction Ejection fraction in % (0–100)
+#* @param serum_creatinine Serum creatinine in mg/dL (0–20)
+#* @param serum_sodium Serum sodium in mEq/L (90–200)
 #* @post /predict
 #* @serializer json
-function(age,
-         anaemia,
-         creatinine_phosphokinase,
-         diabetes,
-         ejection_fraction,
-         high_blood_pressure,
-         platelets,
-         serum_creatinine,
-         serum_sodium,
-         sex,
-         smoking) {
+function(age, ejection_fraction, serum_creatinine, serum_sodium, res){
   
-  input <- data.frame(
-    age = as.numeric(age),
-    anaemia = factor(as.integer(anaemia), levels = c(0, 1)),
-    creatinine_phosphokinase = as.numeric(creatinine_phosphokinase),
-    diabetes = factor(as.integer(diabetes), levels = c(0, 1)),
-    ejection_fraction = as.numeric(ejection_fraction),
-    high_blood_pressure = factor(as.integer(high_blood_pressure), levels = c(0, 1)),
-    platelets = as.numeric(platelets),
-    serum_creatinine = as.numeric(serum_creatinine),
-    serum_sodium = as.numeric(serum_sodium),
-    sex = factor(as.integer(sex), levels = c(0, 1)),
-    smoking = factor(as.integer(smoking), levels = c(0, 1))
+  # Convert inputs to numeric
+  age <- as.numeric(age)
+  ejection_fraction <- as.numeric(ejection_fraction)
+  serum_creatinine <- as.numeric(serum_creatinine)
+  serum_sodium <- as.numeric(serum_sodium)
+  
+  # Validate inputs
+  if (is.na(age) || age < 0 || age > 120) {
+    res$status <- 400
+    return(list(error = "age must be between 0 and 120"))
+  }
+  if (is.na(ejection_fraction) || ejection_fraction < 0 || ejection_fraction > 100) {
+    res$status <- 400
+    return(list(error = "ejection_fraction must be between 0 and 100"))
+  }
+  if (is.na(serum_creatinine) || serum_creatinine <= 0 || serum_creatinine > 20) {
+    res$status <- 400
+    return(list(error = "serum_creatinine must be > 0 and <= 20"))
+  }
+  if (is.na(serum_sodium) || serum_sodium < 90 || serum_sodium > 200) {
+    res$status <- 400
+    return(list(error = "serum_sodium must be between 90 and 200"))
+  }
+  
+  # Build dataframe for prediction
+  newdata <- data.frame(
+    age = age,
+    ejection_fraction = ejection_fraction,
+    serum_creatinine = serum_creatinine,
+    serum_sodium = serum_sodium
   )
   
-  prob <- as.numeric(predict(model, newdata = input, type = "response"))
+  #predict probability
+  p <- predict(model, newdata = newdata, type = "response")
   
-  list(probability = prob)
+  list(probability = as.numeric(p))
 }
