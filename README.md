@@ -85,8 +85,6 @@ Phase 2 extends the Phase 1 predictive API by adding:
 * a **Shiny user interface** that consumes the API as a black-box service
 * a **reproducible deployment** using **two interconnected Docker containers** (API + Shiny)
 
-Phase 2 does not retrain or modify the predictive model; it focuses on usability and deployment.
-
 ---
 
 ## Architecture (Phase 2)
