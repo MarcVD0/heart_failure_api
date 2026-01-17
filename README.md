@@ -271,7 +271,7 @@ After editing Dockerfiles, rebuild without cache:
 
 ```bash
 docker compose down
-docker compose build --no-cache api shiny
+docker compose build --no-cache (or docker compose build --no-cache api shiny)
 docker compose up -d
 ```
 
