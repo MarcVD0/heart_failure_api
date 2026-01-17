@@ -508,7 +508,3 @@ ui <- tagList(
 )
 
 shinyApp(ui, server)
-  })
-}
-
-shinyApp(ui, server)
