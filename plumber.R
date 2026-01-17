@@ -16,10 +16,10 @@ function() {
 }
 
 #* Predict death probability
-#* @param age Age in years (0–120)
-#* @param ejection_fraction Ejection fraction in % (0–100)
-#* @param serum_creatinine Serum creatinine in mg/dL (0–20)
-#* @param serum_sodium Serum sodium in mEq/L (90–200)
+#* @param age Age in years (0-120)
+#* @param ejection_fraction Ejection fraction in % (0-100)
+#* @param serum_creatinine Serum creatinine in mg/dL (0-20)
+#* @param serum_sodium Serum sodium in mEq/L (90-200)
 #* @post /predict
 #* @serializer json
 function(age, ejection_fraction, serum_creatinine, serum_sodium, res){
