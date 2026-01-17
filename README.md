@@ -74,6 +74,7 @@ plumber::plumb("plumber.R")$run()
 6. Open Swagger UI in your browser:
 ```perl
 http://127.0.0.1:<PORT>/__docs__/
+```
 
 # Phase 2: Shiny UI + Docker (API + UI)
 
