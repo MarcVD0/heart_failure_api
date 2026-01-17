@@ -248,7 +248,7 @@ The UI does not run the model locally and contains no predictive logic beyond in
 
 ---
 
-## Troubleshooting
+## Help / Support
 
 ### 1) Docker build fails (R packages missing, e.g., plumber/httr)
 
