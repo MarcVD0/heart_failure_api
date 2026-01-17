@@ -476,7 +476,7 @@ server <- function(input, output, session) {
   )
 
   # -----------------------------------------
-  # Update risk bar width via JS (no extra packages)
+  # Update risk bar width via JS
   # -----------------------------------------
   observe({
     out <- last_response()
